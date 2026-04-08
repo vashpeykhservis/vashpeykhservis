@@ -2,234 +2,142 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Розрахунок магістралі | Ваш П’єх Сервіс</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Кошторис</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f8f9fa;
-            /* Легкий паттерн на фоні */
-            background-image: radial-gradient(#dee2e6 1px, transparent 1px);
-            background-size: 20px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .company-header {
-            color: #1a73e8;
-            font-size: clamp(24px, 5vw, 34px);
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 30px; /* Збільшений відступ, бо тепер немає фото */
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        #calculator {
-            background-color: #ffffff;
-            padding: clamp(25px, 5vw, 40px);
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 480px;
-            border-top: 10px solid #1a73e8;
-            box-sizing: border-box;
-        }
-
-        h2 {
-            color: #202124;
-            margin-top: 0;
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .subtitle {
-            text-align: center;
-            font-size: 14px;
-            color: #5f6368;
-            margin-bottom: 25px;
-        }
-
-        label {
-            font-size: 14px;
-            color: #3c4043;
-            display: block;
-            margin-bottom: 7px;
-            font-weight: 600;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 13px;
-            margin-bottom: 20px;
-            border: 1px solid #dadce0;
-            border-radius: 10px;
-            font-size: 16px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a73e8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 14px;
-            cursor: pointer;
-        }
-
-        input:focus, select:focus {
-            border-color: #1a73e8;
-        }
-
-        #result {
-            text-align: center;
-            color: #1a73e8;
-            background: #f1f3f4;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            font-size: 22px;
-            font-weight: 800;
-            border: 1px solid #e8eaed;
-        }
-
-        .btn-viber {
-            width: 100%;
-            padding: 18px;
-            background-color: #7360f2;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            text-decoration: none;
-            display: block;
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        .btn-viber:hover {
-            background-color: #5e4ecf;
-        }
-
-        .info-text {
-            font-size: 11px;
-            color: #70757a;
-            margin-top: -16px;
-            margin-bottom: 16px;
-            padding-left: 5px;
-        }
-
-        .price-note {
-            font-size: 13px;
-            color: #1a73e8;
-            margin-bottom: 25px;
-            text-align: center;
-            font-weight: 600;
-            background: #e8f0fe;
-            padding: 8px;
-            border-radius: 8px;
-        }
-        
-        hr {
-            border: 0;
-            border-top: 1px solid #f1f3f4;
-            margin-bottom: 25px;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f2f2f7; margin: 0; padding: 10px; }
+        #receipt-content { background: #f2f2f7; padding: 10px; border-radius: 12px; }
+        .container { background: #fff; border-radius: 12px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        h2 { font-size: 15px; color: #fff; background: #007aff; padding: 10px 12px; border-radius: 8px; margin: 0 0 10px 0; }
+        .table-header { display: flex; gap: 5px; padding-bottom: 8px; border-bottom: 2px solid #e5e5ea; margin-bottom: 10px; font-size: 12px; font-weight: bold; color: #8e8e93; text-align: center; align-items: center;}
+        .th-name { flex: 1; text-align: left; }
+        .th-price { width: 55px; }
+        .th-qty { width: 45px; }
+        .th-total { width: 60px; text-align: right; }
+        .item { display: flex; align-items: center; gap: 5px; padding-bottom: 10px; border-bottom: 1px solid #e5e5ea; margin-bottom: 10px; }
+        .item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .name { flex: 1; font-weight: 500; font-size: 13px; color: #1c1c1e; line-height: 1.2; word-break: break-word; margin: 0; }
+        input[type="number"] { padding: 6px 2px; border: 1px solid #c7c7cc; border-radius: 6px; font-size: 14px; text-align: center; background: #f2f2f7; box-sizing: border-box; }
+        .price-input { width: 55px; }
+        .qty-input { width: 45px; }
+        input::placeholder { color: #c7c7cc; }
+        .item-total { width: 60px; font-weight: 600; font-size: 13px; color: #1c1c1e; text-align: right; white-space: nowrap; }
+        .stage-total { text-align: right; font-size: 15px; font-weight: bold; color: #007aff; margin-top: 12px; padding-top: 12px; border-top: 2px dashed #e5e5ea; }
+        .grand-total { font-size: 17px; font-weight: bold; text-align: center; background: #34c759; color: white; padding: 15px; border-radius: 12px; margin-top: 15px; box-shadow: 0 4px 12px rgba(52,199,89,0.2); }
+        .actions { display: flex; gap: 8px; margin-bottom: 30px; padding: 0 5px; margin-top: 15px;}
+        .btn { flex: 1; padding: 12px 5px; border: none; border-radius: 12px; color: white; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .btn:active { opacity: 0.8; transform: scale(0.98); }
+        .btn-icon { font-size: 20px; }
+        .btn-text { font-size: 11px; font-weight: 600; }
+        .btn-blue { background: #007aff; }
+        .btn-green { background: #34c759; }
+        .btn-red { background: #ff3b30; }
     </style>
 </head>
 <body>
 
-    <div class="company-header">Ваш П’єх Сервіс</div>
+<div id="receipt-content"></div>
 
-<div id="calculator">
-    <h2>Розрахунок вартості</h2>
-    <div class="subtitle">Матеріали <b>Halcor</b> (Греція)</div>
-
-    <div class="price-note">Монтаж фреономагістралі (робота): 2200 грн</div>
-
-    <label>Площа приміщення:</label>
-    <select id="lineType" oninput="calculate()">
-        <option value="750">До 25-35 м² — 750 грн/м</option>
-        <option value="1000">До 40-55 м² — 1000 грн/м</option>
-        <option value="1100">До 70-90 м² — 1100 грн/м</option>
-    </select>
-
-    <label>Довжина магістралі (метрів):</label>
-    <input type="number" id="meters" value="3" min="3" oninput="calculate()">
-    <div class="info-text">Мінімальна довжина — 3 метри</div>
-
-    <hr>
-
-    <label>Штроблення під магістраль (м):</label>
-    <input type="number" id="wallMeters" value="0" min="0" oninput="calculate()">
-    <div class="info-text">Ціна — 200 грн/метр</div>
-
-    <label>Штроблення під дренаж (м):</label>
-    <input type="number" id="drainageMeters" value="0" min="0" oninput="calculate()">
-    <div class="info-text">Ціна — 300 грн/метр</div>
-
-    <label>Сифон для дренажу:</label>
-    <select id="siphon" oninput="calculate()">
-        <option value="0">Не потрібен</option>
-        <option value="1600">Тільки сифон — 1600 грн</option>
-        <option value="2300">Сифон з монтажем — 2300 грн</option>
-    </select>
-
-    <div id="result">Завантаження...</div>
-
-    <a href="#" id="viberLink" target="_blank" class="btn-viber">Замовити у Viber</a>
+<div class="actions">
+    <button class="btn btn-blue" onclick="exportToImage()">
+        <div class="btn-icon" id="icon-save">📸</div>
+        <div class="btn-text" id="text-save">Зберегти</div>
+    </button>
+    <button class="btn btn-green" onclick="shareImage()">
+        <div class="btn-icon" id="icon-share">📤</div>
+        <div class="btn-text" id="text-share">Надіслати</div>
+    </button>
+    <button class="btn btn-red" onclick="clearAll()">
+        <div class="btn-icon">🗑</div>
+        <div class="btn-text">Очистити</div>
+    </button>
 </div>
 
 <script>
-    function calculate() {
-        const baseWork = 2200; 
-        const lineSelect = document.getElementById('lineType');
-        const pricePerM = Number(lineSelect.value);
-        const areaText = lineSelect.options[lineSelect.selectedIndex].text.split(' —')[0];
-        
-        let mInput = document.getElementById('meters');
-        let mVal = Number(mInput.value);
-        let finalM = mVal < 3 ? 3 : mVal;
-
-        const wM = Number(document.getElementById('wallMeters').value);
-        const dM = Number(document.getElementById('drainageMeters').value);
-        const sPrice = Number(document.getElementById('siphon').value);
-        const sText = document.getElementById('siphon').options[document.getElementById('siphon').selectedIndex].text;
-
-        let total = baseWork + (pricePerM * finalM) + (wM * 200) + (dM * 300) + sPrice;
-        
-        const resDiv = document.getElementById('result');
-        if (total < 2500) {
-            resDiv.innerHTML = `Вартість: ${total} грн<br><span style="font-size:12px; color:#d93025; font-weight:400;">Мінімальний виїзд — 2500 грн</span>`;
-        } else {
-            resDiv.innerText = `Вартість: ${total} грн`;
-            resDiv.style.color = "#1a73e8";
+    const data = [
+        {
+            stage: "1 Етап монтажних робіт",
+            items: [
+                { name: "Монтаж фреонової магістралі", price: 2200, qty: 0 },
+                { name: "Фреонова магістраль 1/4 і 3/8", price: 750, qty: 0 },
+                { name: "Фреонова магістраль 1/4 і 1/2", price: 950, qty: 0 },
+                { name: "Фреонова магістраль 1/4 і 5/8 (3/8 і 5/8)", price: 1100, qty: 0 },
+                { name: "Сифон HL138", price: 1600, qty: 0 },
+                { name: "Монтаж Сифона з розхідниками", price: 700, qty: 0 },
+                { name: "Штроба до 5 см.", price: 200, qty: 0 },
+                { name: "Прокладання дренажної труби ПВХ", price: 100, qty: 0 },
+                { name: "Алмазне буріння отвору 52мм", price: 200, qty: 0 },
+                { name: "Кабель 3х2,5 та його прокладання", price: 80, qty: 0 }
+            ]
+        },
+        {
+            stage: "2 Етап монтажних робіт",
+            items: [
+                { name: "Монтаж внутр. блоку [7.9.12]", price: 1500, qty: 0 },
+                { name: "Монтаж внутр. блоку [18.24]", price: 2000, qty: 0 },
+                { name: "Монтаж зовн. блоку [7.9.12]", price: 2000, qty: 0 },
+                { name: "Монтаж зовн. блоку [18.24]", price: 2500, qty: 0 },
+                { name: "Монтаж корзини", price: 1300, qty: 0 },
+                { name: "Послуги альпініста", price: 3000, qty: 0 }
+            ]
         }
+    ];
 
-        const msg = `Ваш П'єх Сервіс - Замовлення:\n` +
-                    `- Об'єкт: ${areaText}\n` +
-                    `- Магістраль: ${finalM} м\n` +
-                    `- Штроба магістралі: ${wM} м\n` +
-                    `- Штроба дренажу: ${dM} м\n` +
-                    `- Сифон: ${sText}\n` +
-                    `РАЗОМ: ${total < 2500 ? 2500 : total} грн`;
-        
-        document.getElementById('viberLink').href = `viber://chat?number=%2B380632080811&draft=${encodeURIComponent(msg)}`;
+    function render() {
+        let html = '';
+        let grandTotal = 0;
+        data.forEach((stage, sIndex) => {
+            let stageTotal = 0;
+            html += `<div class="container"><h2>${stage.stage}</h2><div class="table-header"><div class="th-name">Робота</div><div class="th-price">Ціна</div><div class="th-qty">К-сть</div><div class="th-total">Сума</div></div>`;
+            stage.items.forEach((item, iIndex) => {
+                let total = item.price * item.qty;
+                stageTotal += total;
+                let displayQty = item.qty === 0 ? '' : item.qty;
+                html += `<div class="item"><div class="name">${item.name}</div><input type="number" class="price-input" inputmode="numeric" value="${item.price}" onchange="updatePrice(${sIndex}, ${iIndex}, this.value)"><input type="number" class="qty-input" inputmode="numeric" placeholder="0" value="${displayQty}" onchange="updateQty(${sIndex}, ${iIndex}, this.value)"><div class="item-total">${total}</div></div>`;
+            });
+            grandTotal += stageTotal;
+            html += `<div class="stage-total">Разом: ${stageTotal} ₴</div></div>`;
+        });
+        html += `<div class="grand-total">Всього до оплати: ${grandTotal} ₴</div>`;
+        document.getElementById('receipt-content').innerHTML = html;
     }
-    window.onload = calculate;
-</script>
 
+    function updateQty(sIndex, iIndex, value) { data[sIndex].items[iIndex].qty = Number(value) || 0; render(); }
+    function updatePrice(sIndex, iIndex, value) { data[sIndex].items[iIndex].price = Number(value) || 0; render(); }
+    function clearAll() { if(confirm('Очистити все?')) { data.forEach(s => s.items.forEach(i => i.qty = 0)); render(); window.scrollTo(0,0); } }
+
+    function exportToImage() {
+        const icon = document.getElementById('icon-save');
+        const text = document.getElementById('text-save');
+        icon.innerHTML = '⏳'; text.innerHTML = '...';
+        html2canvas(document.getElementById('receipt-content'), { scale: 2, backgroundColor: "#f2f2f7" }).then(canvas => {
+            let link = document.createElement('a');
+            link.download = 'Check.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            icon.innerHTML = '✅'; text.innerHTML = 'Готово';
+            setTimeout(() => { icon.innerHTML = '📸'; text.innerHTML = 'Зберегти'; }, 2000);
+        });
+    }
+
+    function shareImage() {
+        const icon = document.getElementById('icon-share');
+        const text = document.getElementById('text-share');
+        icon.innerHTML = '⏳'; text.innerHTML = '...';
+        html2canvas(document.getElementById('receipt-content'), { scale: 2, backgroundColor: "#f2f2f7" }).then(canvas => {
+            canvas.toBlob(blob => {
+                const file = new File([blob], "Check.png", { type: "image/png" });
+                if (navigator.share) {
+                    navigator.share({ files: [file], title: 'Кошторис' })
+                    .then(() => { icon.innerHTML = '✅'; text.innerHTML = 'ОК'; })
+                    .catch(() => {})
+                    .finally(() => { setTimeout(() => { icon.innerHTML = '📤'; text.innerHTML = 'Надіслати'; }, 2000); });
+                } else { alert("Не підтримується браузером"); }
+            });
+        });
+    }
+    render();
+</script>
 </body>
 </html>
