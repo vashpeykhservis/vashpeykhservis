@@ -7,49 +7,56 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f2f2f7; margin: 0; padding: 8px; color: #1c1c1e; }
-        #receipt-content { background: #f2f2f7; padding: 6px; border-radius: 8px; }
         
-        .container { background: #fff; border-radius: 8px; padding: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); margin-bottom: 10px; }
-        h2 { font-size: 13px; color: #fff; background: #007aff; padding: 8px 10px; border-radius: 6px; margin: 0 0 10px 0; letter-spacing: 0.2px; }
+        /* Перемикач вкладок */
+        .tabs { display: flex; background: #e5e5ea; border-radius: 8px; padding: 3px; margin-bottom: 10px; }
+        .tab-btn { flex: 1; padding: 10px 0; text-align: center; font-size: 13px; font-weight: 600; color: #8e8e93; border-radius: 6px; border: none; background: transparent; cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.3px;}
+        .tab-btn.active { background: #fff; color: #1c1c1e; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
         
-        .table-header { display: flex; gap: 4px; padding-bottom: 6px; border-bottom: 1px solid #e5e5ea; margin-bottom: 6px; font-size: 10px; font-weight: 600; color: #8e8e93; text-align: center; align-items: center; text-transform: uppercase; }
+        /* Контейнер для чека */
+        #receipt-wrapper { background: #f2f2f7; padding: 6px; border-radius: 8px; }
+        .container { background: #fff; border-radius: 8px; padding: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+        
+        h2 { font-size: 14px; color: #fff; background: #007aff; padding: 10px; border-radius: 6px; margin: 0 0 10px 0; letter-spacing: 0.2px; text-align: center;}
+        
+        .table-header { display: flex; gap: 4px; padding-bottom: 6px; border-bottom: 1px solid #e5e5ea; margin-bottom: 6px; font-size: 10px; font-weight: 600; color: #8e8e93; text-align: center; text-transform: uppercase; }
         .th-name { flex: 1; text-align: left; }
         .th-price { width: 55px; }
         .th-qty { width: 40px; }
         .th-total { width: 60px; text-align: right; }
         
-        .item { display: flex; align-items: center; gap: 4px; padding: 5px 0; border-bottom: 1px solid #f2f2f7; }
-        .item:last-child { border-bottom: none; padding-bottom: 0; }
+        .item { display: flex; align-items: center; gap: 4px; padding: 6px 0; border-bottom: 1px solid #f2f2f7; }
+        .item:last-child { border-bottom: none; }
         
-        .name { flex: 1; font-weight: 500; font-size: 12px; line-height: 1.2; word-break: break-word; margin: 0; padding-right: 4px;}
+        .name { flex: 1; font-weight: 500; font-size: 13px; line-height: 1.2; word-break: break-word; margin: 0; padding-right: 4px;}
         
-        input[type="number"] { padding: 4px 1px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; font-weight: 500; text-align: center; background: #f2f2f7; box-sizing: border-box; color: #000; margin: 0;}
+        input[type="number"] { padding: 6px 1px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; font-weight: 500; text-align: center; background: #f2f2f7; box-sizing: border-box; color: #000; margin: 0;}
         input:focus { outline: 1px solid #007aff; background: #fff; border-color: transparent;}
         .price-input { width: 55px; }
         .qty-input { width: 40px; }
         input::placeholder { color: #c7c7cc; }
         
-        .item-total { width: 60px; font-weight: 600; font-size: 12px; text-align: right; white-space: nowrap; }
-        .stage-total { text-align: right; font-size: 13px; font-weight: 700; color: #007aff; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #c7c7cc; }
-        .grand-total { font-size: 15px; font-weight: bold; text-align: center; background: #34c759; color: white; padding: 12px; border-radius: 8px; margin-top: 10px; box-shadow: 0 2px 8px rgba(52,199,89,0.2); position: sticky; bottom: 10px; z-index: 100;}
+        .item-total { width: 60px; font-weight: 600; font-size: 13px; text-align: right; white-space: nowrap; }
         
-        /* Оновлені кнопки (лише дві) */
+        /* Підсумок поточного етапу */
+        .stage-total { font-size: 16px; font-weight: bold; text-align: center; background: #34c759; color: white; padding: 14px; border-radius: 8px; margin-top: 15px; box-shadow: 0 2px 8px rgba(52,199,89,0.2); }
+        
+        /* Кнопки знизу */
         .actions { display: flex; gap: 10px; margin-bottom: 20px; padding: 0 4px; margin-top: 15px;}
         .btn { flex: 1; padding: 12px 6px; border: none; border-radius: 10px; color: white; cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: transform 0.1s;}
         .btn:active { opacity: 0.8; transform: scale(0.96); }
         .btn-icon { font-size: 20px; }
-        .btn-text { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        .btn-text { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
         
-        /* Колір Viber */
         .btn-viber { background: #7360f2; } 
         .btn-red { background: #ff3b30; }
 
         @media (orientation: landscape) {
             body { padding: 4px 10px; }
-            .container { padding: 6px 10px; margin-bottom: 8px;}
-            h2 { padding: 6px 8px; margin-bottom: 6px; font-size: 12px;}
+            .container { padding: 8px 10px; }
+            h2 { padding: 8px; margin-bottom: 8px; font-size: 13px;}
             .item { padding: 4px 0; }
-            .grand-total { padding: 8px; font-size: 14px; bottom: 4px; margin-top: 8px;}
+            .stage-total { padding: 10px; font-size: 15px; margin-top: 10px;}
             .actions { margin-bottom: 15px; gap: 15px;}
             .btn { padding: 10px; }
         }
@@ -57,21 +64,30 @@
 </head>
 <body>
 
-<div id="receipt-content"></div>
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(0)" id="tab-0">1. Перший етап</button>
+    <button class="tab-btn" onclick="switchTab(1)" id="tab-1">2. Другий етап</button>
+</div>
+
+<div id="receipt-wrapper">
+    <div id="receipt-content" class="container"></div>
+</div>
 
 <div class="actions">
     <button class="btn btn-viber" onclick="sendImage()">
         <div class="btn-icon" id="icon-send">💬</div>
-        <div class="btn-text" id="text-send">Надіслати клієнту</div>
+        <div class="btn-text" id="text-send">Надіслати цей етап</div>
     </button>
     
     <button class="btn btn-red" onclick="clearAll()">
         <div class="btn-icon">🗑</div>
-        <div class="btn-text">Очистити</div>
+        <div class="btn-text">Очистити все</div>
     </button>
 </div>
 
 <script>
+    let currentTab = 0; // 0 - Перший етап, 1 - Другий етап
+
     const data = [
         {
             stage: "1 Етап монтажних робіт",
@@ -101,63 +117,77 @@
         }
     ];
 
+    function switchTab(index) {
+        currentTab = index;
+        document.getElementById('tab-0').classList.toggle('active', index === 0);
+        document.getElementById('tab-1').classList.toggle('active', index === 1);
+        render(); // Перемальовуємо екран під вибраний етап
+    }
+
     function render() {
-        let html = '';
-        let grandTotal = 0;
-        data.forEach((stage, sIndex) => {
-            let stageTotal = 0;
-            html += `<div class="container"><h2>${stage.stage}</h2><div class="table-header"><div class="th-name">Робота</div><div class="th-price">Ціна</div><div class="th-qty">К-сть</div><div class="th-total">Сума</div></div>`;
-            stage.items.forEach((item, iIndex) => {
-                let total = item.price * item.qty;
-                stageTotal += total;
-                let displayQty = item.qty === 0 ? '' : item.qty;
-                html += `<div class="item"><div class="name">${item.name}</div><input type="number" class="price-input" inputmode="numeric" value="${item.price}" onchange="updatePrice(${sIndex}, ${iIndex}, this.value)"><input type="number" class="qty-input" inputmode="numeric" placeholder="0" value="${displayQty}" onchange="updateQty(${sIndex}, ${iIndex}, this.value)"><div class="item-total">${total}</div></div>`;
-            });
-            grandTotal += stageTotal;
-            html += `<div class="stage-total">Разом: ${stageTotal} ₴</div></div>`;
+        let stage = data[currentTab];
+        let stageTotal = 0;
+        
+        let html = `<h2>${stage.stage}</h2><div class="table-header"><div class="th-name">Робота</div><div class="th-price">Ціна</div><div class="th-qty">К-сть</div><div class="th-total">Сума</div></div>`;
+        
+        stage.items.forEach((item, iIndex) => {
+            let total = item.price * item.qty;
+            stageTotal += total;
+            let displayQty = item.qty === 0 ? '' : item.qty;
+            html += `<div class="item">
+                        <div class="name">${item.name}</div>
+                        <input type="number" class="price-input" inputmode="numeric" value="${item.price}" onchange="updatePrice(${currentTab}, ${iIndex}, this.value)">
+                        <input type="number" class="qty-input" inputmode="numeric" placeholder="0" value="${displayQty}" onchange="updateQty(${currentTab}, ${iIndex}, this.value)">
+                        <div class="item-total">${total}</div>
+                     </div>`;
         });
-        html += `<div class="grand-total">Всього до оплати: ${grandTotal} ₴</div>`;
+        
+        html += `<div class="stage-total">Всього за етап: ${stageTotal} ₴</div>`;
         document.getElementById('receipt-content').innerHTML = html;
     }
 
     function updateQty(sIndex, iIndex, value) { data[sIndex].items[iIndex].qty = Number(value) || 0; render(); }
     function updatePrice(sIndex, iIndex, value) { data[sIndex].items[iIndex].price = Number(value) || 0; render(); }
-    function clearAll() { if(confirm('Очистити всі поля для нового прорахунку?')) { data.forEach(s => s.items.forEach(i => i.qty = 0)); render(); window.scrollTo(0,0); } }
+    
+    function clearAll() { 
+        if(confirm('Очистити всі поля в обох етапах?')) { 
+            data.forEach(s => s.items.forEach(i => i.qty = 0)); 
+            render(); 
+        } 
+    }
 
     function sendImage() {
         const icon = document.getElementById('icon-send');
         const text = document.getElementById('text-send');
         icon.innerHTML = '⏳'; text.innerHTML = 'ГОТУЮ ФОТО...';
         
-        html2canvas(document.getElementById('receipt-content'), { scale: 2, backgroundColor: "#f2f2f7" }).then(canvas => {
+        // Робимо фото тільки блоку з поточним етапом
+        const content = document.getElementById('receipt-wrapper');
+        
+        html2canvas(content, { scale: 2, backgroundColor: "#f2f2f7" }).then(canvas => {
             canvas.toBlob(blob => {
-                const file = new File([blob], "Koshtorys.png", { type: "image/png" });
+                // Називаємо файл відповідно до етапу
+                let fileName = currentTab === 0 ? "Koshtorys_1_Etap.png" : "Koshtorys_2_Etap.png";
+                const file = new File([blob], fileName, { type: "image/png" });
                 
-                // Перевіряємо, чи підтримує телефон пряму відправку файлів (на iPhone підтримує)
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    navigator.share({ files: [file], title: 'Кошторис на монтаж' })
-                    .then(() => { 
-                        icon.innerHTML = '✅'; text.innerHTML = 'УСПІШНО'; 
-                    })
-                    .catch(() => { 
-                        // Якщо користувач закрив меню Поділитися без відправки
-                        icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ КЛІЄНТУ'; 
-                    })
-                    .finally(() => { 
-                        setTimeout(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ КЛІЄНТУ'; }, 2000); 
-                    });
+                    navigator.share({ files: [file], title: data[currentTab].stage })
+                    .then(() => { icon.innerHTML = '✅'; text.innerHTML = 'УСПІШНО'; })
+                    .catch(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ ЦЕЙ ЕТАП'; })
+                    .finally(() => { setTimeout(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ ЦЕЙ ЕТАП'; }, 2000); });
                 } else { 
-                    // Запасний варіант, якщо відкрили не з телефона
                     let link = document.createElement('a');
-                    link.download = 'Кошторис_Монтаж.png';
+                    link.download = fileName;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                     icon.innerHTML = '✅'; text.innerHTML = 'ЗБЕРЕЖЕНО';
-                    setTimeout(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ КЛІЄНТУ'; }, 2000);
+                    setTimeout(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ ЦЕЙ ЕТАП'; }, 2000);
                 }
             });
         });
     }
+    
+    // Запуск малювання при відкритті
     render();
 </script>
 </body>
