@@ -76,7 +76,7 @@
 <div class="actions">
     <button class="btn btn-viber" onclick="sendImage()">
         <div class="btn-icon" id="icon-send">💬</div>
-        <div class="btn-text" id="text-send">Надіслати цей етап</div>
+        <div class="btn-text" id="text-send">Надіслати чек</div>
     </button>
     
     <button class="btn btn-red" onclick="clearAll()">
@@ -97,20 +97,20 @@
                 { name: "Фреонова магістраль 1/4 і 1/2", price: 950, qty: 0 },
                 { name: "Фреонова магістраль 1/4 і 5/8 (3/8 і 5/8)", price: 1100, qty: 0 },
                 { name: "Сифон HL138", price: 1600, qty: 0 },
-                { name: "Монтаж Сифона з розхідниками", price: 700, qty: 0 },
-                { name: "Штроба до 5 см.", price: 200, qty: 0 },
+                { name: "Монтаж сифона з розхідниками", price: 700, qty: 0 },
+                { name: "Штроба до 5 см", price: 200, qty: 0 },
                 { name: "Прокладання дренажної труби ПВХ", price: 100, qty: 0 },
-                { name: "Алмазне буріння отвору 52мм", price: 200, qty: 0 },
+                { name: "Алмазне буріння отвору 52 мм", price: 200, qty: 0 },
                 { name: "Кабель 3х2,5 та його прокладання", price: 80, qty: 0 }
             ]
         },
         {
             stage: "2 Етап монтажних робіт",
             items: [
-                { name: "Монтаж внутр. блоку [7.9.12]", price: 1500, qty: 0 },
-                { name: "Монтаж внутр. блоку [18.24]", price: 2000, qty: 0 },
-                { name: "Монтаж зовн. блоку [7.9.12]", price: 2000, qty: 0 },
-                { name: "Монтаж зовн. блоку [18.24]", price: 2500, qty: 0 },
+                { name: "Монтаж внутр. блоку [7, 9, 12]", price: 1500, qty: 0 },
+                { name: "Монтаж внутр. блоку [18, 24]", price: 2000, qty: 0 },
+                { name: "Монтаж зовн. блоку [7, 9, 12]", price: 2000, qty: 0 },
+                { name: "Монтаж зовн. блоку [18, 24]", price: 2500, qty: 0 },
                 { name: "Монтаж корзини", price: 1300, qty: 0 },
                 { name: "Послуги альпініста", price: 3000, qty: 0 }
             ]
@@ -173,15 +173,15 @@
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     navigator.share({ files: [file], title: data[currentTab].stage })
                     .then(() => { icon.innerHTML = '✅'; text.innerHTML = 'УСПІШНО'; })
-                    .catch(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ ЦЕЙ ЕТАП'; })
-                    .finally(() => { setTimeout(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ ЦЕЙ ЕТАП'; }, 2000); });
+                    .catch(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ ЧЕК'; })
+                    .finally(() => { setTimeout(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ ЧЕК'; }, 2000); });
                 } else { 
                     let link = document.createElement('a');
                     link.download = fileName;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                     icon.innerHTML = '✅'; text.innerHTML = 'ЗБЕРЕЖЕНО';
-                    setTimeout(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ ЦЕЙ ЕТАП'; }, 2000);
+                    setTimeout(() => { icon.innerHTML = '💬'; text.innerHTML = 'НАДІСЛАТИ ЧЕК'; }, 2000);
                 }
             });
         });
