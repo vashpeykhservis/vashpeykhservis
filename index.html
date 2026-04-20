@@ -22,8 +22,8 @@
         .table-header { display: flex; gap: 4px; padding-bottom: 6px; border-bottom: 1px solid #e5e5ea; margin-bottom: 6px; font-size: 10px; font-weight: 600; color: #8e8e93; text-align: center; text-transform: uppercase; }
         .th-name { flex: 1; text-align: left; }
         .th-price { width: 55px; }
-        .th-qty { width: 40px; }
-        .th-total { width: 60px; text-align: right; }
+        .th-qty { width: 45px; }
+        .th-total { width: 65px; text-align: right; }
         
         .item { display: flex; align-items: center; gap: 4px; padding: 6px 0; border-bottom: 1px solid #f2f2f7; }
         .item:last-child { border-bottom: none; }
@@ -33,10 +33,10 @@
         input[type="number"] { padding: 6px 1px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; font-weight: 500; text-align: center; background: #f2f2f7; box-sizing: border-box; color: #000; margin: 0;}
         input:focus { outline: 1px solid #007aff; background: #fff; border-color: transparent;}
         .price-input { width: 55px; }
-        .qty-input { width: 40px; }
+        .qty-input { width: 45px; }
         input::placeholder { color: #c7c7cc; }
         
-        .item-total { width: 60px; font-weight: 600; font-size: 13px; text-align: right; white-space: nowrap; }
+        .item-total { width: 65px; font-weight: 600; font-size: 13px; text-align: right; white-space: nowrap; }
         
         /* Підсумок поточного етапу */
         .stage-total { font-size: 16px; font-weight: bold; text-align: center; background: #34c759; color: white; padding: 14px; border-radius: 8px; margin-top: 15px; box-shadow: 0 2px 8px rgba(52,199,89,0.2); }
@@ -86,7 +86,7 @@
 </div>
 
 <script>
-    let currentTab = 0; // 0 - Перший етап, 1 - Другий етап
+    let currentTab = 0;
 
     const data = [
         {
@@ -121,7 +121,7 @@
         currentTab = index;
         document.getElementById('tab-0').classList.toggle('active', index === 0);
         document.getElementById('tab-1').classList.toggle('active', index === 1);
-        render(); // Перемальовуємо екран під вибраний етап
+        render();
     }
 
     function render() {
@@ -131,23 +131,39 @@
         let html = `<h2>${stage.stage}</h2><div class="table-header"><div class="th-name">Робота</div><div class="th-price">Ціна</div><div class="th-qty">К-сть</div><div class="th-total">Сума</div></div>`;
         
         stage.items.forEach((item, iIndex) => {
-            let total = item.price * item.qty;
+            // Округлення для запобігання помилок JS (наприклад 2.3 * 100 = 229.9999)
+            let total = Math.round((item.price * item.qty) * 100) / 100;
             stageTotal += total;
+            
             let displayQty = item.qty === 0 ? '' : item.qty;
+            
             html += `<div class="item">
                         <div class="name">${item.name}</div>
-                        <input type="number" class="price-input" inputmode="numeric" value="${item.price}" onchange="updatePrice(${currentTab}, ${iIndex}, this.value)">
-                        <input type="number" class="qty-input" inputmode="numeric" placeholder="0" value="${displayQty}" onchange="updateQty(${currentTab}, ${iIndex}, this.value)">
+                        <input type="number" class="price-input" inputmode="decimal" step="any" value="${item.price}" onfocus="this.select()" onchange="updatePrice(${currentTab}, ${iIndex}, this.value)">
+                        <input type="number" class="qty-input" inputmode="decimal" step="any" placeholder="0" value="${displayQty}" onfocus="this.select()" onchange="updateQty(${currentTab}, ${iIndex}, this.value)">
                         <div class="item-total">${total}</div>
                      </div>`;
         });
+        
+        // Фінальна сума також округлюється
+        stageTotal = Math.round(stageTotal * 100) / 100;
         
         html += `<div class="stage-total">Загальна вартість: ${stageTotal} ₴</div>`;
         document.getElementById('receipt-content').innerHTML = html;
     }
 
-    function updateQty(sIndex, iIndex, value) { data[sIndex].items[iIndex].qty = Number(value) || 0; render(); }
-    function updatePrice(sIndex, iIndex, value) { data[sIndex].items[iIndex].price = Number(value) || 0; render(); }
+    function updateQty(sIndex, iIndex, value) { 
+        // Замінюємо кому на крапку для коректного розпізнавання числа
+        let val = value.replace(',', '.');
+        data[sIndex].items[iIndex].qty = Number(val) || 0; 
+        render(); 
+    }
+
+    function updatePrice(sIndex, iIndex, value) { 
+        let val = value.replace(',', '.');
+        data[sIndex].items[iIndex].price = Number(val) || 0; 
+        render(); 
+    }
     
     function clearAll() { 
         if(confirm('Очистити всі поля в обох етапах?')) { 
@@ -161,12 +177,10 @@
         const text = document.getElementById('text-send');
         icon.innerHTML = '⏳'; text.innerHTML = 'ГОТУЮ ФОТО...';
         
-        // Робимо фото тільки блоку з поточним етапом
         const content = document.getElementById('receipt-wrapper');
         
         html2canvas(content, { scale: 2, backgroundColor: "#f2f2f7" }).then(canvas => {
             canvas.toBlob(blob => {
-                // Називаємо файл відповідно до етапу
                 let fileName = currentTab === 0 ? "Koshtorys_1_Etap.png" : "Koshtorys_2_Etap.png";
                 const file = new File([blob], fileName, { type: "image/png" });
                 
@@ -187,7 +201,6 @@
         });
     }
     
-    // Запуск малювання при відкритті
     render();
 </script>
 </body>
