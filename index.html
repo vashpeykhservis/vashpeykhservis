@@ -102,7 +102,7 @@
                 { name: "Дренажна труба ПВХ з прокладанням", price: 100, qty: 0 },
                 { name: "Алмазне буріння отвору 52 мм", price: 200, qty: 0 },
                 { name: "Кабель 3х2,5 та його прокладання", price: 80, qty: 0 },
-                { name: "Злив з зовнішнього блоку", price: 0, qty: 0 }
+                { name: "Злив з зовнішнього блоку", price: 800, qty: 0 }
             ]
         },
         {
@@ -151,7 +151,6 @@
         document.getElementById('receipt-content').innerHTML = html;
     }
 
-    // Замінюємо кому на крапку для коректного розпізнавання числа
     function updateQty(sIndex, iIndex, value) { 
         let val = value.replace(',', '.');
         data[sIndex].items[iIndex].qty = Number(val) || 0; 
