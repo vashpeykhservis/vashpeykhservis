@@ -28,7 +28,9 @@
         .item { display: flex; align-items: center; gap: 4px; padding: 6px 0; border-bottom: 1px solid #f2f2f7; }
         .item:last-child { border-bottom: none; }
         
-        .name { flex: 1; font-weight: 500; font-size: 13px; line-height: 1.2; word-break: break-word; margin: 0; padding-right: 4px;}
+        /* Стилі для редагованої назви */
+        .name { flex: 1; font-weight: 500; font-size: 13px; line-height: 1.2; word-break: break-word; margin: 0; padding: 4px; border: 1px solid transparent; border-radius: 4px; transition: background 0.2s; }
+        .name[contenteditable="true"]:focus { outline: 1px solid #007aff; background: #fff; }
         
         input[type="number"] { padding: 6px 1px; border: 1px solid #d1d1d6; border-radius: 6px; font-size: 14px; font-weight: 500; text-align: center; background: #f2f2f7; box-sizing: border-box; color: #000; margin: 0;}
         input:focus { outline: 1px solid #007aff; background: #fff; border-color: transparent;}
@@ -41,6 +43,9 @@
         /* Підсумок поточного етапу */
         .stage-total { font-size: 16px; font-weight: bold; text-align: center; background: #34c759; color: white; padding: 14px; border-radius: 8px; margin-top: 15px; box-shadow: 0 2px 8px rgba(52,199,89,0.2); }
         
+        /* Текст знизу */
+        .footer-note { font-size: 12px; color: #8e8e93; text-align: center; margin-top: 15px; font-weight: 500; line-height: 1.4; padding: 0 10px; font-style: italic; }
+
         /* Кнопки знизу */
         .actions { display: flex; gap: 10px; margin-bottom: 20px; padding: 0 4px; margin-top: 15px;}
         .btn { flex: 1; padding: 12px 6px; border: none; border-radius: 10px; color: white; cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: transform 0.1s;}
@@ -94,7 +99,6 @@
             items: [
                 { name: "Монтаж фреонової магістралі", price: 2200, qty: 0 },
                 { name: "Фреонова магістраль 1/4 і 3/8", price: 800, qty: 0 },
-                { name: "Фреонова магістраль 1/4 і 1/2", price: 950, qty: 0 },
                 { name: "Фреонова магістраль 1/4 і 5/8 (3/8 і 5/8)", price: 1100, qty: 0 },
                 { name: "Сифон HL138", price: 1600, qty: 0 },
                 { name: "Монтаж сифона з розхідниками", price: 700, qty: 0 },
@@ -138,7 +142,7 @@
             let displayQty = item.qty === 0 ? '' : item.qty;
             
             html += `<div class="item">
-                        <div class="name">${item.name}</div>
+                        <div class="name" contenteditable="true" onblur="updateName(${currentTab}, ${iIndex}, this.innerText)">${item.name}</div>
                         <input type="number" class="price-input" inputmode="decimal" step="any" value="${item.price}" onfocus="this.select()" onchange="updatePrice(${currentTab}, ${iIndex}, this.value)">
                         <input type="number" class="qty-input" inputmode="decimal" step="any" placeholder="0" value="${displayQty}" onfocus="this.select()" onchange="updateQty(${currentTab}, ${iIndex}, this.value)">
                         <div class="item-total">${total}</div>
@@ -148,7 +152,13 @@
         stageTotal = Math.round(stageTotal * 100) / 100;
         
         html += `<div class="stage-total">Загальна вартість: ${stageTotal} ₴</div>`;
+        html += `<div class="footer-note">«Встановлюємо лише те обладнання, яке продаємо, і надаємо офіційну гарантію на обладнання та монтажні роботи.»</div>`;
+        
         document.getElementById('receipt-content').innerHTML = html;
+    }
+
+    function updateName(sIndex, iIndex, value) {
+        data[sIndex].items[iIndex].name = value;
     }
 
     function updateQty(sIndex, iIndex, value) { 
